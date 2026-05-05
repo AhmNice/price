@@ -1,0 +1,69 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("user")
+  password  String?
+  watchlist Watchlist[]
+  sessions   SessionToken[]
+}
+
+model Product {
+  id        String   @id @default(uuid())
+  name      String
+  category  String?
+  prices    PriceListing[]
+  watchlist Watchlist[]
+  createdAt DateTime @default(now())
+}
+
+model Market {
+  id        String   @id @default(uuid())
+  name      String
+  location  String?
+  prices    PriceListing[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PriceListing {
+  id           String   @id @default(uuid())
+  productId    String
+  marketId     String
+  price        Float
+  recordedAt   DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  product Product @relation(fields: [productId], references: [id])
+  market  Market  @relation(fields: [marketId], references: [id])
+}
+
+model Watchlist {
+  id          String   @id @default(uuid())
+  userId      String
+  productId   String
+  targetPrice Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+model SessionToken {
+  refreshToken String @id
+  userId       String
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
