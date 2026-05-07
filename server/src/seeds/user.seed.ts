@@ -7,6 +7,7 @@ type UserSeed = {
   email: string;
   name: string;
   password: string;
+  role?: string;
 };
 
 const userSeeds: UserSeed[] = [
@@ -14,6 +15,7 @@ const userSeeds: UserSeed[] = [
     email: "admin@price.local",
     name: "Admin User",
     password: "Admin@12345",
+    role:"admin"
   },
   {
     email: "ade@example.com",
